@@ -79,4 +79,128 @@ const fetchPnr = async (pnr) => {
 
 };
 
-module.exports = { fetchPnr }
+const trainScheduleService = async (trainno) => {
+
+  // const browser = await puppeteer.launch();
+
+  // ## Modify the code as below
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+    headless: true,
+  })
+  const page = await browser.newPage();
+  await page.goto(`https://www.confirmtkt.com/train-schedule/${trainno}`);
+
+  // Wait for the JavaScript to execute
+  await page.waitForTimeout(1000); // Adjust the timeout as needed
+
+  // Extract JavaScript code from the script tag with the specific keyword
+  const scriptCode = await page.evaluate(() => {
+    const scriptTags = Array.from(document.getElementsByTagName('script'));
+    const keyword = 'var data'; 
+    let scriptWithKeyword = null;
+
+    for (const scriptTag of scriptTags) {
+      if (scriptTag.textContent.includes(keyword)) {
+        scriptWithKeyword = scriptTag.textContent;
+        break;
+      }
+    }
+
+    console.log(scriptWithKeyword);
+    return scriptWithKeyword;
+  });
+
+  // Extract the data variable content from the filtered script
+  const dataVariableValue = await page.evaluate(scriptCode => {
+    if (!scriptCode) return null;
+
+    // Find the pattern of the desired variable
+    const regex = /var\s+data\s*=\s*'({[^']*})';/;
+    const match = regex.exec(scriptCode);
+    return match ? match[1] : null;
+    // return match
+    // return match
+  }, scriptCode);
+
+  // console.log('Data variable value:\n', dataVariableValue);
+  let userdata;
+
+  try {
+    const jsonObject = JSON.parse(dataVariableValue);
+
+    await browser.close();
+    return dataVariableValue;
+  } catch (error) {
+    await browser.close();
+    return error.message;
+  }
+
+  console.log();
+
+  //   await browser.close();
+
+  // const endDate = Date.now()
+  // console.log('Response Time : ',(endDate - started)/1000)
+
+};
+
+const liveTrainService = async (trainno) => {
+
+  // const browser = await puppeteer.launch();
+
+  // ## Modify the code as below
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+    headless: true,
+  })
+  const page = await browser.newPage();
+  await page.goto(`https://www.confirmtkt.com/train-running-status/${trainno}`);
+
+  // Wait for the JavaScript to execute
+  await page.waitForTimeout(1000); // Adjust the timeout as needed
+
+  // Extract JavaScript code from the script tag with the specific keyword
+  const scriptCode = await page.evaluate(() => {
+    const scriptTags = Array.from(document.getElementsByTagName('script'));
+    const keyword = 'var data'; 
+    let scriptWithKeyword = null;
+
+    for (const scriptTag of scriptTags) {
+      if (scriptTag.textContent.includes(keyword)) {
+        scriptWithKeyword = scriptTag.textContent;
+        break;
+      }
+    }
+
+    console.log(scriptWithKeyword);
+    return scriptWithKeyword;
+  });
+
+  // Extract the data variable content from the filtered script
+  const dataVariableValue = await page.evaluate(scriptCode => {
+    if (!scriptCode) return null;
+
+    var replacedContent = scriptCode.replace(/&nbsp;/g, 'null');
+    // Find the pattern of the desired variable
+    const regex = /var\s+data\s*=\s*(.*?);/;
+    const match = regex.exec(replacedContent);
+    return match ? match[1] : scriptCode;
+  }, scriptCode);
+
+
+  try {
+    // const jsonObject = JSON.parse(dataVariableValue);
+
+    await browser.close();
+    return dataVariableValue;
+  } catch (error) {
+    await browser.close();
+    return error.message;
+  }
+
+  console.log();
+
+
+};
+module.exports = { fetchPnr, trainScheduleService, liveTrainService }

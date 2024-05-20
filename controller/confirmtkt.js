@@ -1,12 +1,10 @@
-const { fetchPnr } = require("../service/confirmtkt")
+const { fetchPnr, trainScheduleService, liveTrainService } = require("../service/confirmtkt")
 
-const confirmtkt = async (req,res)=>{
+const pnrQuery = async (req,res)=>{
 
     const {pnr} = req.body
 
     const data = await fetchPnr(pnr)
-
-    
 
     const response = {
         "pnr": data.Pnr,
@@ -32,4 +30,19 @@ const confirmtkt = async (req,res)=>{
 
 }
 
-module.exports = confirmtkt
+const trainSchedule = async (req,res)=>{
+
+    const {trainno} = req.body
+    const data = await trainScheduleService(trainno)
+    res.json(data)
+}
+
+const liveTrainStatus = async (req,res)=>{
+
+    const {trainno} = req.body
+
+    const data = await liveTrainService(trainno)
+    res.send(data)
+}
+
+module.exports = {pnrQuery, trainSchedule, liveTrainStatus}
