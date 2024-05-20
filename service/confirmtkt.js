@@ -119,29 +119,18 @@ const trainScheduleService = async (trainno) => {
     const regex = /var\s+data\s*=\s*'({[^']*})';/;
     const match = regex.exec(scriptCode);
     return match ? match[1] : null;
-    // return match
-    // return match
   }, scriptCode);
-
-  // console.log('Data variable value:\n', dataVariableValue);
-  let userdata;
 
   try {
     const jsonObject = JSON.parse(dataVariableValue);
 
     await browser.close();
-    return dataVariableValue;
+    return jsonObject;
   } catch (error) {
     await browser.close();
     return error.message;
   }
 
-  console.log();
-
-  //   await browser.close();
-
-  // const endDate = Date.now()
-  // console.log('Response Time : ',(endDate - started)/1000)
 
 };
 
