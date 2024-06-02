@@ -1,12 +1,14 @@
 const express = require('express');
-const {pnrQuery, trainSchedule, liveTrainStatus} = require('./controller/confirmtkt');
+const {pnrQuery, trainSchedule, liveTrainStatus, pnrQuery2} = require('./controller/confirmtkt');
 const authenticate = require('./middleware');
 const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.post('/pnr-query', authenticate, pnrQuery)
+app.post('/pnr-query', pnrQuery)
+app.post('/pnr-query2', authenticate, pnrQuery2)
+// app.post('/pnr-query', authenticate, pnrQuery)
 app.post('/train-schedule', trainSchedule)
 app.post('/running-status', liveTrainStatus)
 
