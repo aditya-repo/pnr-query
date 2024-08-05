@@ -30,7 +30,6 @@ const pnrQuery = async (req,res)=>{
 
 }
 
-
 const pnrQuery2 = async (req,res)=>{
 
     const {pnr} = req.body
@@ -65,7 +64,6 @@ const pnrQuery2 = async (req,res)=>{
     res.status(200).json(response)
 
 }
-
 
 const trainSchedule = async (req,res)=>{
 

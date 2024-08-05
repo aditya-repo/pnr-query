@@ -6,6 +6,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+app.get('/', (req, res)=>{
+    return res.json({message: "Hello Guys!"})
+})
 app.post('/pnr-query', pnrQuery)
 app.post('/pnr-query2', authenticate, pnrQuery2)
 // app.post('/pnr-query', authenticate, pnrQuery)
